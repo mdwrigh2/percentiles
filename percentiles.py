@@ -1,20 +1,30 @@
-import heapq
 import math
+from heap import MinHeap, MaxHeap
 
 class PercentileTracker(object):
     def __init__(self, *percentilesToTrack):
-        pass
+        self.percentiles = {}
+        for p in percentilesToTrack:
+            self.percentiles[p] = SinglePercentileTracker(p)
+
+
 
     def add(self, num):
-        pass
+        for p in self.percentiles.itervalues():
+            p.add(num)
 
 
     def add_list(self, lst):
         for i in lst:
-            self.add(num)
+            self.add(i)
 
     def get_percentile(self, percentile):
-        pass
+        p = self.percentiles.get(percentile, None)
+        if p:
+            return p.percentile
+        else:
+            raise PercentileNotTrackedError(percentile)
+
 
 
 class SinglePercentileTracker(object):
@@ -33,9 +43,10 @@ class SinglePercentileTracker(object):
             self.rheap.push(num)
         else:
             self.lheap.push(num)
-
         if self.lheap.size() < lsize:
             self.lheap.push(self.rheap.pop())
+        elif self.lheap.size() > lsize:
+            self.rheap.push(self.lheap.pop())
         ir = int(n)
         fr = n - ir
         low_data = self.lheap.get(0)
@@ -48,41 +59,11 @@ class SinglePercentileTracker(object):
 
 
 
+class PercentileNotTrackedError(Exception):
+    def __init__(self, percentile):
+        self.percentile = percentile
+
+    def __str__(self):
+        return str(self.percentile)
 
 
-class MaxHeap(object):
-    def __init__(self):
-        self.heap = []
-
-    def push(self, num):
-        heapq.heappush(self.heap,-num)
-
-    def pop(self):
-        return -heapq.heappop(self.heap)
-
-    def get(self, num):
-        if num >= len(self.heap):
-            return 0
-        return -self.heap[num]
-
-    def size(self):
-        return len(self.heap)
-        
-# Just for consistency
-class MinHeap(object):
-    def __init__(self):
-        self.heap = []
-
-    def push(self, num):
-        heapq.heappush(self.heap,num)
-
-    def pop(self):
-        return heapq.heappop(self.heap)
-
-    def get(self, num):
-        if num >= len(self.heap):
-            return 0
-        return self.heap[num]
-
-    def size(self):
-        return len(self.heap)
