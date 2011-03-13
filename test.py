@@ -1,4 +1,4 @@
-from percentiles import SinglePercentileTracker, PercentileTracker
+from percentiles import SinglePercentileTracker, PercentileTracker, PercentileNotTrackedError
 import unittest
 
 class PercentilesTest(unittest.TestCase):
@@ -23,6 +23,12 @@ class PercentilesTest(unittest.TestCase):
         p.add_list(lst)
         self.assertEquals(5, p.get_percentile(25))
         self.failUnlessAlmostEqual(9.85, p.get_percentile(85))
+
+    def testPercentileFailure(self):
+        p = PercentileTracker(25, 85)
+        lst = [4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 10, 10, 10]
+        p.add_list(lst)
+        self.assertRaises(PercentileNotTrackedError, p.get_percentile, 80)
 
 if __name__ == "__main__":
     unittest.main()
