@@ -17,7 +17,7 @@ class PercentileTracker(object):
     def add(self, num):
         # Time Complexity:
             # O(k) for iteration, where k is the number of percentiles tracked
-            # Each addition takes O(log n) time, where n is the number of 
+            # Each addition takes O(log n) time, where n is the number of
             # values in the lists
             # Therefore this takes O(k * log n) time
         for p in self.percentiles.itervalues():
@@ -51,18 +51,29 @@ class SinglePercentileTracker(object):
         # An addition to a list is O(log n) since look up is O(1)
         # insertions are O(log n), and worst case pop is O(log n)
         # and everything is done a constant number of times. In these
-        # cases, n is the size of the larger of the two heaps 
+        # cases, n is the size of the larger of the two heaps
         self.size += 1
         n = (self.percentile_tracked / 100.0) * (self.size + 1)
+        # The left heap should always be the floor of n, so we have the
+        # floor(n)th ranked node as the max node in the left heap, and the
+        # min node of the right heap will be the nth+1 ranked node.
         lsize = int(math.floor(n))
+        # Push the num on to the proper heap
         if num > self.percentile:
             self.rheap.push(num)
         else:
             self.lheap.push(num)
+
+        # if the left heap isn't the right size, push or pop the nodes
+        # to make sure it is.
         if self.lheap.size() < lsize:
             self.lheap.push(self.rheap.pop())
         elif self.lheap.size() > lsize:
             self.rheap.push(self.lheap.pop())
+        # Take the integer part of n and grab the nth and nth+1
+        # ranked nodes. Then take the nth node as the base
+        # and add the fractional part of n * nth+1 ranked node to get a
+        # weighted value between the two. This is your percentile.
         ir = int(n)
         fr = n - ir
         low_data = self.lheap.get(0)

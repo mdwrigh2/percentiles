@@ -1,5 +1,5 @@
 A Python library that will keep track of whatever percentiles you're interested in for a set of data.
 
-Since percentiles don't have a common definition, I'm using a weighted average. This allows us to easily define the median as the 50th percentile, whereas other definitions generally do not.
+Since percentiles don't have a common definition, I'm using a weighted average. This allows us to easily define the median as the 50th percentile, whereas other definitions generally do not. An explanation of the implementation is in the comments, but a more thorough one can be found at the link below.
 
 Reference for definitions of percentiles: http://cnx.org/content/m10805/latest/
